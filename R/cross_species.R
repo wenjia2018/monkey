@@ -44,10 +44,11 @@ controls =
     "Dendritic.cells.activated", "Mast.cells.resting", "Mast.cells.activated", "Eosinophils", "Neutrophils" 
   )
 
-
-design = phen %>% select(ses_change, controls)
-non_missing = complete.cases(design)
-design = model.matrix(~ses_change + sex_interv, data = phen[non_missing, ])
+X = phen %>% select(ses_change, controls)
+non_missing = complete.cases(X)
+rhs = str_c(c("ses_change",controls), collapse = " + ")
+model_formula=str_c(" ~ ",rhs) %>% as.formula()
+design = model.matrix(model_formula, data = X[non_missing, ])
 counts = exprs(dat[, non_missing])
 
 # HUMAN INFERENCE
